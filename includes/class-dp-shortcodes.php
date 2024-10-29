@@ -106,11 +106,7 @@ class DP_Shortcodes {
 
         // Si el usuario ha ingresado su ubicación, filtrar por proximidad
         if ($this->user_lat && $this->user_lng) {
-            add_filter('posts_fields', array($this, 'add_distance_field'));
-            add_filter('posts_join', array($this, 'add_distance_join'));
-            add_filter('posts_orderby', array($this, 'order_by_distance'));
-            add_filter('posts_clauses', array($this, 'add_distance_having'));
-
+            add_filter('posts_clauses', array($this, 'modify_posts_clauses'));
             $args['meta_query'][] = array(
                 'relation' => 'AND',
                 array(
@@ -185,10 +181,7 @@ class DP_Shortcodes {
         }
 
         if ($this->user_lat && $this->user_lng) {
-            remove_filter('posts_fields', array($this, 'add_distance_field'));
-            remove_filter('posts_join', array($this, 'add_distance_join'));
-            remove_filter('posts_orderby', array($this, 'order_by_distance'));
-            remove_filter('posts_clauses', array($this, 'add_distance_having'));
+            remove_filter('posts_clauses', array($this, 'modify_posts_clauses'));
         }
 
         // Div de depuración
@@ -199,31 +192,29 @@ class DP_Shortcodes {
             <p><strong>Latitud del Usuario:</strong> <?php echo esc_html($this->user_lat); ?></p>
             <p><strong>Longitud del Usuario:</strong> <?php echo esc_html($this->user_lng); ?></p>
             <p><strong>Género Seleccionado:</strong> <?php echo esc_html($genero); ?></p>
-            <p><strong>Consulta SQL:</strong> <?php echo isset($query) ? esc_html($query->request) : 'N/A'; ?></p>
+            <p><strong>Consulta SQL:</strong> <?php echo isset($query->request) ? esc_html($query->request) : 'N/A'; ?></p>
         </div>
         <?php
 
         return ob_get_clean();
     }
 
-    public function add_distance_field($fields) {
-        return $fields . ", ( 6371 * acos( cos( radians({$this->user_lat}) ) * cos( radians( CAST(latitud_prof.meta_value AS DECIMAL(10,6)) ) ) * cos( radians( CAST(longitud_prof.meta_value AS DECIMAL(10,6)) ) - radians({$this->user_lng})) + sin( radians({$this->user_lat}) ) * sin( radians( CAST(latitud_prof.meta_value AS DECIMAL(10,6)) ) ) ) ) AS distance";
-    }
-
-    public function add_distance_join($join) {
+    public function modify_posts_clauses($clauses) {
         global $wpdb;
-        $join .= " INNER JOIN {$wpdb->postmeta} AS latitud_prof ON {$wpdb->posts}.ID = latitud_prof.post_id AND latitud_prof.meta_key = 'latitud_profesional'";
-        $join .= " INNER JOIN {$wpdb->postmeta} AS longitud_prof ON {$wpdb->posts}.ID = longitud_prof.post_id AND longitud_prof.meta_key = 'longitud_profesional'";
-        return $join;
-    }
 
-    public function order_by_distance($orderby) {
-        return "distance ASC";
-    }
+        // Añadir los JOIN necesarios
+        $clauses['join'] .= " INNER JOIN {$wpdb->postmeta} AS latitud_prof ON {$wpdb->posts}.ID = latitud_prof.post_id AND latitud_prof.meta_key = 'latitud_profesional'";
+        $clauses['join'] .= " INNER JOIN {$wpdb->postmeta} AS longitud_prof ON {$wpdb->posts}.ID = longitud_prof.post_id AND longitud_prof.meta_key = 'longitud_profesional'";
 
-    public function add_distance_having($clauses) {
-        global $wpdb;
+        // Añadir el campo distance
+        $clauses['fields'] .= ", ( 6371 * acos( cos( radians({$this->user_lat}) ) * cos( radians( CAST(latitud_prof.meta_value AS DECIMAL(10,6)) ) ) * cos( radians( CAST(longitud_prof.meta_value AS DECIMAL(10,6)) ) - radians({$this->user_lng})) + sin( radians({$this->user_lat}) ) * sin( radians( CAST(latitud_prof.meta_value AS DECIMAL(10,6)) ) ) ) ) AS distance";
+
+        // Añadir el ORDER BY
+        $clauses['orderby'] = "distance ASC";
+
+        // Añadir el HAVING
         $clauses['having'] = "distance < {$this->radius}";
+
         return $clauses;
     }
 }
