@@ -8,5 +8,5 @@
  */
 
 document.addEventListener('DOMContentLoaded', function() {
-    // Puedes añadir scripts personalizados aquí en el futuro
+    console.log('Directorio profesionales script loaded...')
 });

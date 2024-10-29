@@ -1,11 +1,14 @@
 <?php
-/**
- * Plugin Name: Directorio de Profesionales
- * Description: Un directorio de profesionales con filtros por proximidad y género.
- * Version: 1.0
- * Author: Marc Bernet
- * Text Domain: directorio-profesionales
- */
+/*
+Plugin Name: Directorio de Profesionales
+Plugin URI: https://liquidbcn.com
+Description: Crea un directorio de profesionales con filtrado por género y ubicación, mostrando la distancia desde la ubicación del usuario. Personaliza el radio de búsqueda y habilita la depuración.
+Version: 2.0
+Author: Marc Bernet
+Author URI: https://liquidbcn.com
+License: GPL2
+Text Domain: directorio-profesionales
+*/
 
 if (!defined('ABSPATH')) {
     exit;
@@ -20,7 +23,7 @@ require_once DP_PLUGIN_DIR . 'includes/class-dp-acf-fields.php';
 require_once DP_PLUGIN_DIR . 'includes/class-dp-geocoding.php';
 require_once DP_PLUGIN_DIR . 'includes/class-dp-shortcodes.php';
 require_once DP_PLUGIN_DIR . 'includes/class-dp-enqueue.php';
-require_once DP_PLUGIN_DIR . 'includes/class-dp-settings.php'; // Nueva línea
+require_once DP_PLUGIN_DIR . 'includes/class-dp-settings.php';
 
 function dp_init_plugin() {
     DP_CPT::get_instance();

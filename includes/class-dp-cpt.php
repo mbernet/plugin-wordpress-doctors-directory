@@ -18,7 +18,20 @@ class DP_CPT {
 
     private function __construct() {
         add_action('init', array($this, 'register_cpt_profesional'));
+        add_action('init', array($this, 'dp_register_profesional_post_type'));
     }
+    function dp_register_profesional_post_type() {
+        $args = array(
+            'public' => true,
+            'label'  => 'Profesionales',
+            'supports' => array('title', 'editor', 'thumbnail', 'custom-fields', 'excerpt', 'revisions'),
+            'has_archive' => true,
+            'rewrite' => array('slug' => 'profesionales'),
+            'show_in_rest' => true,
+        );
+        register_post_type('profesional', $args);
+    }
+
 
     public function register_cpt_profesional() {
         $labels = array(
