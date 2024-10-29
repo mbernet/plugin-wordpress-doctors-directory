@@ -1,0 +1,93 @@
+/* directorio-profesionales.css */
+
+/* Estilos para el formulario de filtro */
+#form-filtro-profesionales {
+    margin-bottom: 20px;
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+}
+
+#form-filtro-profesionales div {
+    margin-bottom: 10px;
+}
+
+#form-filtro-profesionales label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+#form-filtro-profesionales input[type="text"],
+#form-filtro-profesionales select {
+    width: 100%;
+    padding: 8px;
+    box-sizing: border-box;
+}
+
+#form-filtro-profesionales button {
+    padding: 10px 15px;
+    background-color: #0073aa;
+    color: #fff;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+}
+
+#form-filtro-profesionales button:hover {
+    background-color: #005177;
+}
+
+/* Estilos para la lista de profesionales */
+.directorio-profesionales {
+    list-style: none;
+    padding: 0;
+}
+
+.profesional-item {
+    border: 1px solid #ddd;
+    padding: 15px;
+    margin-bottom: 15px;
+    display: flex;
+    align-items: flex-start;
+    border-radius: 5px;
+    background-color: #fff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.profesional-item img {
+    margin-right: 15px;
+    border-radius: 5px;
+}
+
+.profesional-item h3 {
+    margin-top: 0;
+    margin-bottom: 10px;
+    color: #0073aa;
+}
+
+.profesional-item p {
+    margin: 5px 0;
+}
+
+.profesional-item a {
+    color: #0073aa;
+    text-decoration: none;
+}
+
+.profesional-item a:hover {
+    text-decoration: underline;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .profesional-item {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .profesional-item img {
+        margin-bottom: 15px;
+    }
+}
