@@ -38,6 +38,11 @@ class DP_Shortcodes {
 
         ob_start();
 
+        $custom_css = get_option('dp_custom_css');
+        if (!empty($custom_css)) {
+            echo '<style>' . esc_html($custom_css) . '</style>';
+        }
+
         // Obtener los parámetros de filtrado
         $nombre = isset($_GET['nombre']) ? sanitize_text_field($_GET['nombre']) : '';
         $genero = isset($_GET['genero']) ? sanitize_text_field($_GET['genero']) : '';
@@ -88,30 +93,37 @@ class DP_Shortcodes {
     }
 
     private function display_filter_form($genero, $direccion_usuario, $nombre) {
+        // Obtener la URL actual sin parámetros de búsqueda
+        $current_url = remove_query_arg(array('genero', 'direccion_usuario', 'nombre', 'latitud_usuario', 'longitud_usuario'));
         ?>
-        <form method="GET" id="form-filtro-profesionales" class="filter-form">
-            <div class="form-group">
-                <label for="nombre">Nombre:</label>
-                <input type="text" id="nombre" name="nombre" placeholder="Nombre" value="<?php echo esc_attr($nombre); ?>" autocomplete="off">
-            </div>
-            <div class="form-group">
-                <label for="direccion_usuario">Tu Dirección:</label>
-                <input type="text" id="direccion_usuario" name="direccion_usuario" placeholder="Ej: Calle Falsa 123, Ciudad" value="<?php echo esc_attr($direccion_usuario); ?>" required autocomplete="off">
-            </div>
-            <div class="form-group">
-                <label for="genero">Género:</label>
-                <select id="genero" name="genero">
-                    <option value="">Todos</option>
-                    <option value="Masculino" <?php selected($genero, 'Masculino'); ?>>Masculino</option>
-                    <option value="Femenino" <?php selected($genero, 'Femenino'); ?>>Femenino</option>
-                    <option value="Otro" <?php selected($genero, 'Otro'); ?>>Otro</option>
-                </select>
-            </div>
-            <button type="submit" class="search-button">Buscar</button>
-            <div id="loading-spinner" style="display:none;">
-                <img src="<?php echo esc_url(DP_PLUGIN_URL . 'assets/images/spinner.gif'); ?>" alt="Cargando..." />
-            </div>
-        </form>
+        <div id="section-form-filtro-professionales">
+            <form method="GET" id="form-filtro-profesionales" class="filter-form">
+                <div class="form-group">
+                    <label for="nombre">Nombre:</label>
+                    <input type="text" id="nombre" name="nombre" placeholder="Nombre" value="<?php echo esc_attr($nombre); ?>" autocomplete="off">
+                </div>
+                <div class="form-group">
+                    <label for="direccion_usuario">Tu Dirección:</label>
+                    <input type="text" id="direccion_usuario" name="direccion_usuario" placeholder="Ej: Av Diagonal 123, Barcelona" value="<?php echo esc_attr($direccion_usuario); ?>" autocomplete="off">
+                </div>
+                <div class="form-group">
+                    <label for="genero">Género:</label>
+                    <select id="genero" name="genero">
+                        <option value="">Todos</option>
+                        <option value="Masculino" <?php selected($genero, 'Masculino'); ?>>Masculino</option>
+                        <option value="Femenino" <?php selected($genero, 'Femenino'); ?>>Femenino</option>
+                        <option value="Otro" <?php selected($genero, 'Otro'); ?>>Otro</option>
+                    </select>
+                </div>
+                <div class="form-actions">
+                    <button type="submit" class="search-button">Buscar</button>
+                    <a href="<?php echo esc_url($current_url); ?>" class="reset-filters-button">Mostrar Todos</a>
+                </div>
+                <div id="loading-spinner" style="display:none;">
+                    <img src="<?php echo esc_url(DP_PLUGIN_URL . 'assets/images/spinner.gif'); ?>" alt="Cargando..." />
+                </div>
+            </form>
+        </div>
         <?php
     }
 

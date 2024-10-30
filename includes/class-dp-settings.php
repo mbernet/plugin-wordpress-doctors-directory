@@ -2,7 +2,6 @@
 if (!defined('ABSPATH')) {
     exit; // Evita el acceso directo al archivo
 }
-
 class DP_Settings {
     private static $instance = null;
     private $options;
@@ -33,7 +32,7 @@ class DP_Settings {
         register_setting('dp_settings_group', 'dp_search_radius', array(
             'type' => 'integer',
             'sanitize_callback' => 'absint',
-            'default' => 50, // Valor por defecto: 50 km
+            'default' => 50,
         ));
 
         // Registrar Modo de Depuración
@@ -43,7 +42,14 @@ class DP_Settings {
             'default' => false,
         ));
 
-        // Añadir Sección de API Key
+        // Registrar CSS Personalizado
+        register_setting('dp_settings_group', 'dp_custom_css', array(
+            'type' => 'string',
+            'sanitize_callback' => 'wp_strip_all_tags',
+            'default' => '',
+        ));
+
+        // Añadir Secciones y Campos
         add_settings_section(
             'dp_api_settings_section',
             __('Configuración de API de Google Maps', 'directorio-profesionales'),
@@ -51,7 +57,6 @@ class DP_Settings {
             'dp-settings'
         );
 
-        // Añadir Campo de API Key
         add_settings_field(
             'dp_google_maps_api_key',
             __('Clave API de Google Maps', 'directorio-profesionales'),
@@ -60,7 +65,6 @@ class DP_Settings {
             'dp_api_settings_section'
         );
 
-        // Añadir Sección de Configuración Adicional
         add_settings_section(
             'dp_additional_settings_section',
             __('Configuración Adicional', 'directorio-profesionales'),
@@ -68,7 +72,6 @@ class DP_Settings {
             'dp-settings'
         );
 
-        // Añadir Campo de Radio de Búsqueda
         add_settings_field(
             'dp_search_radius',
             __('Radio de Búsqueda (km)', 'directorio-profesionales'),
@@ -77,7 +80,6 @@ class DP_Settings {
             'dp_additional_settings_section'
         );
 
-        // Añadir Campo de Modo de Depuración
         add_settings_field(
             'dp_debug_mode',
             __('Modo de Depuración', 'directorio-profesionales'),
@@ -86,7 +88,14 @@ class DP_Settings {
             'dp_additional_settings_section'
         );
 
-
+        // Campo de CSS Personalizado
+        add_settings_field(
+            'dp_custom_css',
+            __('CSS Personalizado', 'directorio-profesionales'),
+            array($this, 'custom_css_field_callback'),
+            'dp-settings',
+            'dp_additional_settings_section'
+        );
     }
 
     public function add_settings_page() {
@@ -110,9 +119,7 @@ class DP_Settings {
                 submit_button();
                 ?>
             </form>
-            <?php
-            $this->display_instructions();
-            ?>
+            <?php $this->display_instructions(); ?>
             <?php $this->display_disclaimer(); ?>
         </div>
         <?php
@@ -133,13 +140,23 @@ class DP_Settings {
 
     public function search_radius_field_callback() {
         $radius = get_option('dp_search_radius', 50);
-        echo '<input type="number" id="dp_search_radius" name="dp_search_radius" value="' . esc_attr($radius) . '" min="1" max="500" /> ' . esc_html__('km', 'directorio-profesionales');
+        echo '<input type="number" id="dp_search_radius" name="dp_search_radius" value="' . esc_attr($radius) . '" min="1" max="500" /> km';
     }
 
     public function debug_mode_field_callback() {
         $debug = get_option('dp_debug_mode', false);
         echo '<input type="checkbox" id="dp_debug_mode" name="dp_debug_mode" value="1" ' . checked(1, $debug, false) . ' />';
         echo '<label for="dp_debug_mode"> ' . esc_html__('Habilitar modo de depuración para mostrar información adicional en el frontend.', 'directorio-profesionales') . '</label>';
+    }
+
+    public function custom_css_field_callback() {
+        $custom_css = get_option('dp_custom_css', '');
+        echo '<textarea id="dp_custom_css" name="dp_custom_css" rows="10" cols="50" style="width:100%;">' . esc_textarea($custom_css) . '</textarea>';
+        echo '<p class="description">Añade aquí tu CSS personalizado para el plugin.</p>';
+    }
+
+    public function sanitize_checkbox($input) {
+        return ($input == 1) ? true : false;
     }
 
     public function display_instructions() {
@@ -174,9 +191,6 @@ class DP_Settings {
         <?php
     }
 
-    public function sanitize_checkbox($input) {
-        return ($input == 1) ? true : false;
-    }
 }
 
 DP_Settings::get_instance();
