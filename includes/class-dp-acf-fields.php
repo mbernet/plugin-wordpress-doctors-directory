@@ -138,7 +138,7 @@ class DP_ACF_Fields {
                         'choices' => array(
                             'Masculino' => 'Masculino',
                             'Femenino' => 'Femenino',
-                            'Otro' => 'Otro',
+                            'Transgenero' => 'Transgénero',
                         ),
                         'default_value' => array(),
                         'allow_null' => 0,

@@ -99,20 +99,20 @@ class DP_Shortcodes {
         <div id="section-form-filtro-professionales">
             <form method="GET" id="form-filtro-profesionales" class="filter-form">
                 <div class="form-group">
-                    <label for="nombre">Nombre:</label>
-                    <input type="text" id="nombre" name="nombre" placeholder="Nombre" value="<?php echo esc_attr($nombre); ?>" autocomplete="off">
+                    <label for="nombre">Nombre del doctor:</label>
+                    <input type="text" id="nombre" name="nombre" placeholder="Nombre del doctor" value="<?php echo esc_attr($nombre); ?>" autocomplete="off">
                 </div>
                 <div class="form-group">
-                    <label for="direccion_usuario">Tu Dirección:</label>
-                    <input type="text" id="direccion_usuario" name="direccion_usuario" placeholder="Ej: Av Diagonal 123, Barcelona" value="<?php echo esc_attr($direccion_usuario); ?>" autocomplete="off">
+                    <label for="direccion_usuario">Tu población:</label>
+                    <input type="text" id="direccion_usuario" name="direccion_usuario" placeholder="Ej: Barcelona" value="<?php echo esc_attr($direccion_usuario); ?>" autocomplete="off">
                 </div>
                 <div class="form-group">
-                    <label for="genero">Género:</label>
+                    <label for="genero">Tipo de tratamiento:</label>
                     <select id="genero" name="genero">
                         <option value="">Todos</option>
-                        <option value="Masculino" <?php selected($genero, 'Masculino'); ?>>Masculino</option>
-                        <option value="Femenino" <?php selected($genero, 'Femenino'); ?>>Femenino</option>
-                        <option value="Otro" <?php selected($genero, 'Otro'); ?>>Otro</option>
+                        <option value="Masculino" <?php selected($genero, 'Masculino'); ?>>Tratamiento masculino</option>
+                        <option value="Femenino" <?php selected($genero, 'Femenino'); ?>>Tratamiento femenino</option>
+                        <option value="Transgenero" <?php selected($genero, 'Transgenero'); ?>>Tratamiento transgénero</option>
                     </select>
                 </div>
                 <div class="form-actions">
@@ -132,6 +132,8 @@ class DP_Shortcodes {
             'post_type'      => 'profesional',
             'posts_per_page' => -1,
             'meta_query'     => array(),
+            'orderby'        => 'date',
+            'order'          => 'DESC',
         );
 
         if (!empty($genero)) {
