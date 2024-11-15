@@ -45,7 +45,7 @@ class DP_Shortcodes {
 
         // Obtener los parámetros de filtrado
         $nombre = isset($_GET['nombre']) ? sanitize_text_field($_GET['nombre']) : '';
-        $genero = isset($_GET['genero']) ? sanitize_text_field($_GET['genero']) : '';
+        $genero = isset($_GET['genero']) ? (array) $_GET['genero'] : array();
         $direccion_usuario = isset($_GET['direccion_usuario']) ? sanitize_text_field($_GET['direccion_usuario']) : '';
 
         // Geocodificar la dirección del usuario si está presente
@@ -107,13 +107,21 @@ class DP_Shortcodes {
                     <input type="text" id="direccion_usuario" name="direccion_usuario" placeholder="Ej: Barcelona" value="<?php echo esc_attr($direccion_usuario); ?>" autocomplete="off">
                 </div>
                 <div class="form-group">
-                    <label for="genero">Tipo de tratamiento:</label>
-                    <select id="genero" name="genero">
-                        <option value="">Todos</option>
-                        <option value="Masculino" <?php selected($genero, 'Masculino'); ?>>Tratamiento masculino</option>
-                        <option value="Femenino" <?php selected($genero, 'Femenino'); ?>>Tratamiento femenino</option>
-                        <option value="Transgenero" <?php selected($genero, 'Transgenero'); ?>>Tratamiento transgénero</option>
-                    </select>
+                    <label>Tipo de tratamiento:</label>
+                    <div class="checkbox-group">
+                        <label>
+                            <input type="checkbox" name="genero[]" value="Masculino" <?php echo is_array($genero) && in_array('Masculino', $genero) ? 'checked' : ''; ?>>
+                            Masculino
+                        </label>
+                        <label>
+                            <input type="checkbox" name="genero[]" value="Femenino" <?php echo is_array($genero) && in_array('Femenino', $genero) ? 'checked' : ''; ?>>
+                            Femenino
+                        </label>
+                        <label>
+                            <input type="checkbox" name="genero[]" value="Transgenero" <?php echo is_array($genero) && in_array('Transgenero', $genero) ? 'checked' : ''; ?>>
+                            Transgénero
+                        </label>
+                    </div>
                 </div>
                 <div class="form-actions">
                     <button type="submit" class="search-button">Buscar</button>
@@ -133,14 +141,14 @@ class DP_Shortcodes {
             'posts_per_page' => -1,
             'meta_query'     => array(),
             'orderby'        => 'date',
-            'order'          => 'DESC',
+            'order'          => 'ASC',
         );
 
         if (!empty($genero)) {
             $args['meta_query'][] = array(
                 'key'     => 'genero_profesional',
                 'value'   => $genero,
-                'compare' => '=',
+                'compare' => 'IN',
             );
         }
         if(!empty($nombre)){
